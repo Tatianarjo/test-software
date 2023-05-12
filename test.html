@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>FreightWise Programming Test</title>
-
+    <script src="env.js"></script>
     <script>
         'use strict';
 
@@ -48,6 +48,7 @@
          * - Show a satellite map of the weather in Brentwood.
          * - Request a user's phone number and send them an SMS with the weather.
          */
+
         class Test {
             constructor() {
                 this.testResults = document.getElementsByClassName('test-results');
@@ -57,7 +58,37 @@
                 console.log(new Date().toISOString(), '[Test]', 'Running the test');
 
                 // TODO: Make the API call and handle the results
-            }
+                const apiKey = window.API_KEY
+                const city = 'Nashville';
+                const state = 'TN';
+                //const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${state}&appid=${apiKey}`;
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=38.8951&lon=-77.0364&appid=${apiKey}&units=imperial`;
+
+                try {
+                    // Make the API call and handle the results
+                    const response = await axios.get(url);
+                    const weatherData = response.data;
+              
+                    // Format the results
+                    const formattedResults = `
+                      <p>Current temperature in ${city}, ${state}: ${weatherData.main.temp}°F</p>
+                      <p>Weather condition: ${weatherData.weather[0].description}</p>
+                    `;
+              
+                    this.setResults(formattedResults);
+                    this.testResults[0].innerHTML = formattedResults
+                  } catch (error) {
+                    // Format the error
+                    const errorMessage = `
+                      <p>Error fetching weather data: ${error.message}</p>
+                    `;
+              
+                    this.setError(errorMessage);
+                  }
+                }
+                
+
+            
 
             setError(message) {
                 // TODO: Format the error
@@ -67,6 +98,7 @@
             setResults(results) {
                 // TODO: Format the results
                 this.testResults.innerHTML = (results || '').toString();
+                console.log(results)
             }
         }
     </script>
