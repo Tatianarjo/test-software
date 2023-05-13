@@ -62,15 +62,33 @@
                 // TODO: Make the API call and handle the results
                 const apiKey = window.API_KEY
                 const lat = this.latInsert.value;
-                const lon = this.lonInsert.value
+                const lon = this.lonInsert.value;
+
+                //Here is where I am making sure the user puts in actual latitude and longitude
+                const latRegex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}$/;
+                const lonRegex = /^-?(([-+]?)([\d]{1,3})((\.)(\d+))?)/;
+
+                if (!latRegex.test(lat) || !lonRegex.test(lon)) {
+                    const errorMessage = `
+                    <p>Error: Enter valid coordinates<p>`;
+                        this.setError(errorMessage);
+                        return;
+                }
                 //const city = 'Brentwood';
                 //const state = 'TN';
-                const url = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=${apiKey}&units=imperial`;
+                //const url = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=${apiKey}&units=imperial`;
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
 //instead of putting the exact coordinates now I have it so that it knows a user will make an input
+//Need to make sure I make a string interpolation so that way I won't get a 400 error
                 try {
                     // Make the API call and handle the results
                     const response = await axios.get(url);
                     const weatherData = response.data;
+
+                    const city = weatherData.name;
+                    const state = weatherData.sys.country;
+                    const temperature = weatherData.main.temperature;
+                    const description = weatherData.weather[0].description;
               
                     // Format the results
                     const formattedResults = `
@@ -95,9 +113,10 @@
 
             setError(message) {
                 // TODO: Format the error
-                this.testResults.innerHTML = (message || '').toString();
+                this.testResults[0].innerHTML = (message || '').toString();
             }
-
+//I saw I wasn't getting the error I wanted for the function above I realized I am working with the index here as well so I entered the [0]
+//I changed to [0] because that this.testResults is an array & this way it'll go to the first elemment in the array it'll only be one element
             setResults(results) {
                 // TODO: Format the results
                 this.testResults.innerHTML = (results || '').toString();
