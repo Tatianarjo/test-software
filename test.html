@@ -52,18 +52,21 @@
         class Test {
             constructor() {
                 this.testResults = document.getElementsByClassName('test-results');
+                this.latInsert = document.getElementById('lat-insert');
+                this.lonInsert = document.getElementById('lon-insert');
             }
-
+//In the above I'm changing it so that users can put in the latitude and longitude of the city they want
             async run() {
                 console.log(new Date().toISOString(), '[Test]', 'Running the test');
 
                 // TODO: Make the API call and handle the results
                 const apiKey = window.API_KEY
-                const city = 'Brentwood';
-                const state = 'TN';
-                //const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${state}&appid=${apiKey}`;
-                const url = `https://api.openweathermap.org/data/2.5/weather?lat=36.0331&lon=-86.7828&appid=${apiKey}&units=imperial`;
-
+                const lat = this.latInsert.value;
+                const lon = this.lonInsert.value
+                //const city = 'Brentwood';
+                //const state = 'TN';
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=${apiKey}&units=imperial`;
+//instead of putting the exact coordinates now I have it so that it knows a user will make an input
                 try {
                     // Make the API call and handle the results
                     const response = await axios.get(url);
@@ -132,6 +135,15 @@
 </head>
 <body>
     <div class="test-results"></div>
+
+    <div>
+        <label for="lat-insert">Enter The Latitude:</label>
+        <input type="text" id="lat-insert" placeholder="Latitude">
+    </div>
+    <div>
+        <label for="lon-insert">Enter The Longitude:</label>
+        <input type="text" id="lon-insert" placeholder="Longitude">
+    </div>
 
     <div class="button-container"></div>
 
